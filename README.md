@@ -1,121 +1,82 @@
-# Career Compass 🧭 - Prototype 2
+# Career Compass 🧭 - V3
 
-A modern, AI-powered job application tracker designed to streamline your job search journey. Built with React, TypeScript, and Tailwind CSS.
+A modern, AI-powered job application tracker designed to streamline your job search journey. Built with React, TypeScript, Tailwind CSS, and powered by Anthropic's Claude 3.5 Sonnet API!
 
-**Prototype 2** uses the same screens and layout from Prototype 1, but presented in a slightly clearer, more organized format so users can focus on the value of the concept rather than the design details.
+**Version 3** evolves the application into a functional AI-assisted product by integrating a secure Vercel Serverless proxy backend to handle live Claude 3.5 AI prompts directly from the application.
 
-![Career Compass](https://img.shields.io/badge/React-18.3-blue) ![TypeScript](https://img.shields.io/badge/TypeScript-5.6-blue) ![Tailwind CSS](https://img.shields.io/badge/Tailwind-3.4-blue)
+![React](https://img.shields.io/badge/React-18.3-blue) ![TypeScript](https://img.shields.io/badge/TypeScript-5.6-blue) ![Tailwind CSS](https://img.shields.io/badge/Tailwind-3.4-blue) ![Vercel](https://img.shields.io/badge/Vercel-Deployed-black) ![Claude API](https://img.shields.io/badge/AI-Claude_3.5_Sonnet-purple)
 
 ## ✨ Features
 
 ### Dashboard
-- **Kanban Board**: Drag-and-drop interface to manage applications across 5 stages (Saved, Applied, Interviewing, Offer, Rejected)
-- **Compact Stats**: Quick overview of total applications, active opportunities, response rate, and upcoming interviews
-- **Search & Filter**: Instantly find applications by company or role
-- **Persistent Storage**: All data saved locally in your browser
+- **Kanban Board**: Drag-and-drop interface to manage applications across 5 stages (Saved, Applied, Interviewing, Offer, Rejected).
+- **Interactive Modals**: When dragged to Interviewing/Offer stages, modals pop up to let you quickly log your interview or offer dates.
+- **Persistent Storage**: Uses robust local state management (Zustand) keeping your dashboard lightning fast.
 
-### Calendar View
-- **Visual Timeline**: See all your interviews and deadlines at a glance
-- **Drag-and-Drop**: Reschedule events by dragging them to new dates
-- **Side Panel**: View event details, search events, and quick-edit functionality
-- **Time Support**: Add specific times to your interviews and appointments
+### 🧠 CI Optimizer (Powered by Claude)
+- **Instant Match Analysis**: Upload your `.txt` CV and paste a job description.
+- **Live AI Optimization**: Uses Anthropic's Claude API to securely analyze and rewrite your resume bullets targeting the specific job description.
+- **Missing Keywords**: Instantly highlights missing keywords from the JD so you can pass Application Tracking Systems (ATS).
 
-### Analytics
-- **Status Distribution**: Pie chart showing application breakdown by stage
-- **Source Tracking**: Bar chart of where your applications come from
-- **Real-time Metrics**: Automatically updated as you add/update applications
+### 💬 Interview Prep (Powered by Claude)
+- **Role-Specific Coaching**: Paste any job description to instantly get 5 customized interview questions.
+- **Psychological Insights**: The AI breaks down "What they are actually testing" and provides you with the exact framework to answer strongly.
+- **Red Flags**: Outlines exactly what the recruiter considers a "dealbreaker" answer for each prompt.
 
-### Job Discovery
-- **AI-Matched Jobs**: Browse curated job recommendations with match scores
-- **Advanced Filters**: Customize by role, industry, salary, location, work type, experience level, and company size
-- **Quick Add**: One-click to add interesting jobs to your tracker
-- **Interactive Preferences**: Toggle-based filter panel for easy customization
-
-### CV Optimizer
-- **Match Analysis**: Upload your CV and paste a job description to get an instant match score (0-100%)
-- **AI Suggestions**: Receive detailed recommendations across 4 categories:
-  - Keywords (missing terms from job description)
-  - Structure (formatting and organization)
-  - Impact (quantifiable achievements)
-  - Language (action verbs and tone)
-- **Optimized Preview**: See your improved CV with highlighted changes
-- **Score Improvement**: Track before/after scores to measure optimization impact
-
-##  Getting Started
+## 🚀 Getting Started Locally
 
 ### Prerequisites
 - Node.js 18+ and npm
+- An Anthropic API Key
 
 ### Installation
 
 1. Clone the repository:
 ```bash
-git clone [https://github.com/yourusername/career-compass.git](https://github.com/yourusername/career-compass.git)
-cd career-compass
-Install dependencies:
-bash
+git clone https://github.com/priveqbaby/CareerCompassV3.git
+cd CareerCompassV3
+```
+
+2. Install dependencies:
+```bash
 npm install
-Start the development server:
-bash
-npm run dev
-Open http://localhost:5173 in your browser
-Build for Production
-bash
-npm run build
-The built files will be in the dist directory.
+```
 
-🛠️ Tech Stack
-Framework: React 18 with TypeScript
-Styling: Tailwind CSS with custom design system
-State Management: Zustand with localStorage persistence
-Drag & Drop: @dnd-kit
-Charts: Recharts
-UI Components: Radix UI primitives
-Icons: Lucide React
-Date Handling: date-fns
-Build Tool: Vite
-📁 Project Structure
-src/
-├── components/
-│   ├── dashboard/       # Kanban board, job cards, stats
-│   ├── calendar/        # Calendar view and event components
-│   ├── analytics/       # Charts and metrics
-│   ├── discover/        # Job discovery and filters
-│   ├── cv-optimizer/    # CV analysis components
-│   ├── onboarding/      # Initial setup flow
-│   ├── layout/          # App shell, sidebar, navigation
-│   └── ui/              # Reusable UI components (buttons, inputs, etc.)
-├── pages/               # Main page components
-├── store/               # Zustand state management
-├── lib/                 # Utilities and helpers
-└── App.tsx              # Main app component
+3. Setup your Environment Variables:
+Create a `.env` file at the root of the project:
+```bash
+ANTHROPIC_API_KEY=your_actual_anthropic_api_key_here
+```
 
-Design 
-Minimalist, premium design aesthetic.
+4. Start the development server (using Vercel Dev to support the proxy):
+```bash
+npm i -g vercel
+vercel dev
+```
 
-Clean Typography: Inter font for maximum readability
-Subtle Animations: Smooth transitions using Framer Motion
-Consistent Spacing: 8px grid system throughout
-Accessible Colors: High-contrast palette with semantic color usage
-Dark Mode Ready: Full dark mode support via Tailwind CSS
+## ☁️ Vercel Deployment
 
-⚠️ Demo Limitations
-This is a frontend demo with the following limitations:
-Mock AI: CV analysis and job matching use algorithmic simulations, not real AI/ML models
-Local Storage Only: All data stored in browser localStorage (no backend/database)
-No Authentication: Single-user experience without login
-Static Job Data: Job recommendations are hardcoded examples
-No Real Integrations: No actual job board APIs or email sync
-🔮 Future Enhancements
-Backend API with database persistence
-User authentication and multi-user support
-Real AI/ML models for CV analysis and job matching
-Integration with job boards (LinkedIn, Indeed, etc.)
-Email parsing for automatic application tracking
-Team collaboration features
-Mobile app (React Native)
-Browser extension for one-click job saving
+This project is actively configured for **Vercel** serverless deployment. 
+To ensure the AI features work in production:
+1. Connect this GitHub repository to Vercel.
+2. In the Vercel Dashboard, go to **Settings > Environment Variables**.
+3. Add a new variable: `ANTHROPIC_API_KEY` with your secret key.
+4. Redeploy.
 
+## 🛠️ Tech Stack
+- **Frontend**: React 18, TypeScript, Vite
+- **Styling**: Tailwind CSS
+- **State Management**: Zustand
+- **Backend/Proxy**: Vercel Serverless Functions (`api/claude.ts`)
+- **AI Model**: `claude-3-5-sonnet-20241022` (Anthropic)
 
-
-
+## 📁 Key Project Structure
+```
+├── api/
+│   └── claude.ts        # Secure Vercel Function proxying Anthropic requests
+├── src/
+│   ├── components/      # Reusable UI components (Kanban, Modals)
+│   ├── pages/           # Main Views (Dashboard, CVOptimizer, InterviewPrep)
+│   ├── store/           # Zustand state management
+│   └── App.tsx          # Main routing/shell
+```
