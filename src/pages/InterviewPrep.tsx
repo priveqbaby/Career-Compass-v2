@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { callClaude, parseClaudeJSON, ClaudeAPIError } from "../lib/claudeClient";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -42,22 +43,8 @@ Rules:
 - answerFramework should be 2-3 sentences of genuine coaching advice
 - Be direct and honest in redFlags — what actually kills candidates`;
 
-  const response = await fetch("/api/claude", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ prompt }),
-  });
-
-  if (!response.ok) {
-    const errorData = await response.json().catch(() => null);
-    throw new Error(errorData?.error || `API error: ${response.status}`);
-  }
-  const data = await response.json();
-  const text = data.content
-    .map((b: { type: string; text?: string }) => b.type === "text" ? b.text : "")
-    .join("");
-  const clean = text.replace(/```json|```/g, "").trim();
-  return JSON.parse(clean) as PrepResult;
+  const text = await callClaude(prompt, 2000);
+  return parseClaudeJSON<PrepResult>(text);
 }
 
 // ─── Question Types ───────────────────────────────────────────────────────────
@@ -181,7 +168,8 @@ export default function InterviewPrep() {
       const prep = await generateInterviewPrep(jobDescription);
       setResult(prep);
     } catch (err) {
-      setError("Something went wrong. Check your input and try again.");
+      if (err instanceof ClaudeAPIError) { setError(err.message); }
+      else { setError("Something went wrong. Check your input and try again."); }
       console.error(err);
     } finally {
       setIsGenerating(false);
@@ -254,6 +242,7 @@ export default function InterviewPrep() {
       {error && (
         <div className="p-4 rounded-lg bg-destructive/10 border border-destructive/20 text-sm text-destructive">
           {error}
+          <button onClick={handleGenerate} className="mt-2 text-xs underline">Try again</button>
         </div>
       )}
 

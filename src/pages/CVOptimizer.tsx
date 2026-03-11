@@ -1,4 +1,5 @@
 import { useState, useRef } from "react";
+import { callClaude, parseClaudeJSON, ClaudeAPIError } from "../lib/claudeClient";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -51,22 +52,8 @@ Rules:
 - The positioningStatement should reference the company/role by name if detectable from the JD
 - matchScore should be honest, not inflated`;
 
-  const response = await fetch("/api/claude", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ prompt }),
-  });
-
-  if (!response.ok) {
-    const errorData = await response.json().catch(() => null);
-    throw new Error(errorData?.error || `API error: ${response.status}`);
-  }
-  const data = await response.json();
-  const text = data.content
-    .map((b: { type: string; text?: string }) => (b.type === "text" ? b.text : ""))
-    .join("");
-  const clean = text.replace(/```json|```/g, "").trim();
-  return JSON.parse(clean) as AnalysisResult;
+  const text = await callClaude(prompt, 2000);
+  return parseClaudeJSON<AnalysisResult>(text);
 }
 
 // ─── PDF Text Extraction (basic) ─────────────────────────────────────────────
@@ -172,7 +159,8 @@ export default function CVOptimizer() {
       setResult(analysis);
       setActiveTab("bullets");
     } catch (err) {
-      setError("Analysis failed. Please check your inputs and try again.");
+      if (err instanceof ClaudeAPIError) { setError(err.message); }
+      else { setError("Analysis failed. Please check your inputs and try again."); }
       console.error(err);
     } finally {
       setIsAnalyzing(false);
@@ -317,6 +305,7 @@ export default function CVOptimizer() {
       {error && (
         <div className="p-4 rounded-lg bg-destructive/10 border border-destructive/20 text-sm text-destructive">
           {error}
+          <button onClick={handleAnalyze} className="mt-2 text-xs underline">Try again</button>
         </div>
       )}
 

@@ -33,8 +33,8 @@ A modern, AI-powered job application tracker designed to streamline your job sea
 
 1. Clone the repository:
 ```bash
-git clone https://github.com/priveqbaby/CareerCompassV3.git
-cd CareerCompassV3
+git clone https://github.com/priveqbaby/Career-Compass-v2.git
+cd Career-Compass-v2
 ```
 
 2. Install dependencies:
