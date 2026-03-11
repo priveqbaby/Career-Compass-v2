@@ -51,17 +51,16 @@ Rules:
 - The positioningStatement should reference the company/role by name if detectable from the JD
 - matchScore should be honest, not inflated`;
 
-  const response = await fetch("https://api.anthropic.com/v1/messages", {
+  const response = await fetch("/api/claude", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      model: "claude-sonnet-4-20250514",
-      max_tokens: 1000,
-      messages: [{ role: "user", content: prompt }],
-    }),
+    body: JSON.stringify({ prompt }),
   });
 
-  if (!response.ok) throw new Error(`API error: ${response.status}`);
+  if (!response.ok) {
+    const errorData = await response.json().catch(() => null);
+    throw new Error(errorData?.error || `API error: ${response.status}`);
+  }
   const data = await response.json();
   const text = data.content
     .map((b: { type: string; text?: string }) => (b.type === "text" ? b.text : ""))
