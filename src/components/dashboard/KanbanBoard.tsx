@@ -1,4 +1,3 @@
-
 import { useState } from "react"
 import {
     DndContext,
@@ -12,7 +11,7 @@ import {
     closestCorners,
 } from "@dnd-kit/core"
 import { createPortal } from "react-dom"
-import { useJobStore, type JobStatus, type JobApplication } from "../../store/useJobStore"
+import { type JobStatus, type JobApplication } from "../../store/useJobStore"
 import { KanbanColumn } from "./KanbanColumn"
 import { JobCard } from "./JobCard"
 
@@ -26,10 +25,11 @@ const columns: { id: JobStatus; title: string }[] = [
 
 interface KanbanBoardProps {
     applications: JobApplication[]
+    // Dashboard now owns the move logic so it can intercept Interviewing/Offer
+    onStatusChange?: (id: string, newStatus: JobStatus) => void
 }
 
-export function KanbanBoard({ applications }: KanbanBoardProps) {
-    const { moveApplication } = useJobStore()
+export function KanbanBoard({ applications, onStatusChange }: KanbanBoardProps) {
     const [activeJob, setActiveJob] = useState<JobApplication | null>(null)
 
     const sensors = useSensors(
@@ -46,17 +46,8 @@ export function KanbanBoard({ applications }: KanbanBoardProps) {
         }
     }
 
-    function onDragOver(event: DragOverEvent) {
-        const { active, over } = event
-        if (!over) return
-
-        const activeId = active.id
-        const overId = over.id
-
-        if (activeId === overId) return
-
-        // Find the containers
-        // This is handled by onDragEnd for simple column moves
+    function onDragOver(_event: DragOverEvent) {
+        // Handled by onDragEnd
     }
 
     function onDragEnd(event: DragEndEvent) {
@@ -70,20 +61,15 @@ export function KanbanBoard({ applications }: KanbanBoardProps) {
         const activeJobId = active.id as string
         const overId = over.id as string
 
-        // If dropped over a column
+        // If dropped over a column header
         const overColumn = columns.find(col => col.id === overId)
         if (overColumn) {
-            moveApplication(activeJobId, overColumn.id)
+            onStatusChange?.(activeJobId, overColumn.id)
         } else {
-            // If dropped over another card, find that card's column?
-            // For simplicity, let's assume dropping on column container for now
-            // But dnd-kit sortable usually handles reordering.
-            // Since we only have one store list, we just update status.
-
-            // If over is a job card, find its status
+            // If dropped over another card, use that card's column status
             const overJob = applications.find(app => app.id === overId)
             if (overJob) {
-                moveApplication(activeJobId, overJob.status)
+                onStatusChange?.(activeJobId, overJob.status)
             }
         }
 

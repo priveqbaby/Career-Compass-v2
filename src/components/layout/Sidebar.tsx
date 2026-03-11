@@ -1,4 +1,4 @@
-import { LayoutDashboard, Calendar, BarChart3, Sparkles, FileText } from "lucide-react"
+import { LayoutDashboard, Calendar, BarChart3, MessageSquare, FileText } from "lucide-react"
 import { cn } from "../../lib/utils"
 import type { Page } from "../../App"
 
@@ -30,8 +30,8 @@ export function Sidebar({ currentPage, onNavigate }: SidebarProps) {
                         onClick={() => onNavigate('dashboard')}
                     />
                     <NavItem
-                        icon={Sparkles}
-                        label="Discover"
+                        icon={MessageSquare}
+                        label="Interview Prep"
                         active={currentPage === 'discover'}
                         onClick={() => onNavigate('discover')}
                     />
