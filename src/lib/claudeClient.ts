@@ -1,12 +1,11 @@
 const API_TOKEN = import.meta.env.VITE_API_TOKEN as string | undefined;
 
 export class ClaudeAPIError extends Error {
-  constructor(
-    message: string,
-    public readonly status: number
-  ) {
+  readonly status: number;
+  constructor(message: string, status: number) {
     super(message);
     this.name = "ClaudeAPIError";
+    this.status = status;
   }
 }
 
