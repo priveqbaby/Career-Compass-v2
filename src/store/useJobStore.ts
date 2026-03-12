@@ -71,11 +71,12 @@ export const useJobStore = create<JobStore>()((set, get) => ({
 
     const { data, error } = await supabase
       .from('job_applications')
-      .insert({ ...job, user_id: session.user.id })
+      .insert({ ...job, time: job.time || null, user_id: session.user.id })
       .select()
       .single()
 
     if (error || !data) {
+      console.error('[addApplication] Supabase insert failed:', error)
       // Revert on failure
       set((state) => ({
         applications: state.applications.filter((a) => a.id !== tempId),
