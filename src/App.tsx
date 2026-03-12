@@ -21,13 +21,9 @@ function App() {
   const { loadFromSupabase: loadJobs } = useJobStore()
 
   useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setSession(session)
-      setLoading(false)
-    })
-
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (_event, session) => {
       setSession(session)
+      setLoading(false)
       if (session) {
         await loadUser(session.user.id, session.user.email ?? '')
         await loadJobs(session.user.id)

@@ -1,6 +1,8 @@
 import { useState } from "react"
 import { motion } from "framer-motion"
 import { supabase } from "../lib/supabaseClient"
+import { Input } from "../components/ui/input"
+import { Label } from "../components/ui/label"
 
 export function AuthPage() {
   const [mode, setMode] = useState<'login' | 'register'>('login')
@@ -60,39 +62,39 @@ export function AuthPage() {
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-4">
-            <div>
-              <label className="text-sm font-medium mb-1.5 block">Email</label>
-              <input
+            <div className="space-y-1.5">
+              <Label htmlFor="email">Email</Label>
+              <Input
+                id="email"
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
-                className="w-full h-10 px-3 rounded-md border border-input bg-background text-sm focus:outline-none focus:ring-2 focus:ring-ring"
                 placeholder="you@example.com"
               />
             </div>
 
-            <div>
-              <label className="text-sm font-medium mb-1.5 block">Password</label>
-              <input
+            <div className="space-y-1.5">
+              <Label htmlFor="password">Password</Label>
+              <Input
+                id="password"
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
-                className="w-full h-10 px-3 rounded-md border border-input bg-background text-sm focus:outline-none focus:ring-2 focus:ring-ring"
                 placeholder="••••••••"
               />
             </div>
 
             {mode === 'register' && (
-              <div>
-                <label className="text-sm font-medium mb-1.5 block">Confirm Password</label>
-                <input
+              <div className="space-y-1.5">
+                <Label htmlFor="confirm">Confirm Password</Label>
+                <Input
+                  id="confirm"
                   type="password"
                   value={confirm}
                   onChange={(e) => setConfirm(e.target.value)}
                   required
-                  className="w-full h-10 px-3 rounded-md border border-input bg-background text-sm focus:outline-none focus:ring-2 focus:ring-ring"
                   placeholder="••••••••"
                 />
               </div>

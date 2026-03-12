@@ -114,12 +114,7 @@ export const useJobStore = create<JobStore>()((set, get) => ({
     if (error) set({ applications: previous })
   },
 
-  moveApplication: async (id, status) => {
-    set((state) => ({
-      applications: state.applications.map((a) => (a.id === id ? { ...a, status } : a)),
-    }))
-    await supabase.from('job_applications').update({ status }).eq('id', id)
-  },
+  moveApplication: (id, status) => get().updateApplicationStatus(id, status),
 
   reset: () => set({ applications: [], isLoading: false }),
 }))

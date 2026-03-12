@@ -21,6 +21,16 @@ interface AddApplicationDialogProps {
     trigger?: React.ReactNode
 }
 
+const emptyForm = () => ({
+    company: "",
+    role: "",
+    location: "",
+    salary: "",
+    source: "",
+    date: new Date().toISOString().split('T')[0],
+    time: "",
+})
+
 export function AddApplicationDialog({ initialStatus = "Saved", open: controlledOpen, onOpenChange: setControlledOpen, trigger }: AddApplicationDialogProps) {
     const { addApplication } = useJobStore()
     const [internalOpen, setInternalOpen] = useState(false)
@@ -28,15 +38,7 @@ export function AddApplicationDialog({ initialStatus = "Saved", open: controlled
     const open = controlledOpen !== undefined ? controlledOpen : internalOpen
     const setOpen = setControlledOpen || setInternalOpen
 
-    const [formData, setFormData] = useState({
-        company: "",
-        role: "",
-        location: "",
-        salary: "",
-        source: "",
-        date: new Date().toISOString().split('T')[0],
-        time: "",
-    })
+    const [formData, setFormData] = useState(emptyForm)
 
     const [urlInput, setUrlInput] = useState("")
     const [urlLoading, setUrlLoading] = useState(false)
@@ -82,15 +84,7 @@ export function AddApplicationDialog({ initialStatus = "Saved", open: controlled
             status: initialStatus,
         })
         setOpen(false)
-        setFormData({
-            company: "",
-            role: "",
-            location: "",
-            salary: "",
-            source: "",
-            date: new Date().toISOString().split('T')[0],
-            time: "",
-        })
+        setFormData(emptyForm)
         setUrlInput("")
         setUrlError(null)
         setUrlSuccess(false)
@@ -102,17 +96,9 @@ export function AddApplicationDialog({ initialStatus = "Saved", open: controlled
 
     return (
         <Dialog open={open} onOpenChange={setOpen}>
-            {trigger ? (
-                <DialogTrigger asChild>
-                    {trigger}
-                </DialogTrigger>
-            ) : (
-                <DialogTrigger asChild>
-                    <Button>
-                        <Plus className="mr-2 h-4 w-4" /> New Application
-                    </Button>
-                </DialogTrigger>
-            )}
+            <DialogTrigger asChild>
+                {trigger ?? <Button><Plus className="mr-2 h-4 w-4" /> New Application</Button>}
+            </DialogTrigger>
             <DialogContent className="sm:max-w-[425px]">
                 <DialogHeader>
                     <DialogTitle>Add Application</DialogTitle>
