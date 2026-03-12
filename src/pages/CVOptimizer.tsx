@@ -1,5 +1,6 @@
 import { useState, useRef } from "react";
 import { callClaude, parseClaudeJSON, ClaudeAPIError } from "../lib/claudeClient";
+import { useJobStore } from "../store/useJobStore";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -132,6 +133,8 @@ const categoryColors: Record<string, string> = {
 // ─── Main Component ───────────────────────────────────────────────────────────
 
 export default function CVOptimizer() {
+  const { applications } = useJobStore();
+  const appsWithDescription = applications.filter((a) => a.description?.trim());
   const [jobDescription, setJobDescription] = useState("");
   const [resumeText, setResumeText] = useState("");
   const [fileName, setFileName] = useState<string | null>(null);
@@ -201,6 +204,27 @@ export default function CVOptimizer() {
             <p className="text-xs text-muted-foreground">
               Copy and paste the full job posting
             </p>
+            {appsWithDescription.length > 0 ? (
+              <select
+                className="w-full flex h-10 rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                defaultValue=""
+                onChange={(e) => {
+                  const app = appsWithDescription.find((a) => a.id === e.target.value);
+                  if (app?.description) setJobDescription(app.description);
+                }}
+              >
+                <option value="" disabled>Select from saved applications...</option>
+                {appsWithDescription.map((a) => (
+                  <option key={a.id} value={a.id}>
+                    {a.company} — {a.role}
+                  </option>
+                ))}
+              </select>
+            ) : (
+              <p className="text-xs text-muted-foreground">
+                Save a job description with an application to auto-fill here.
+              </p>
+            )}
             <textarea
               className="w-full h-64 p-3 rounded-lg border border-border bg-muted/30 text-sm text-foreground placeholder:text-muted-foreground resize-none focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent"
               placeholder="Paste the full job description here..."

@@ -16,7 +16,7 @@ export interface MatchedJob {
 
 interface QuickAddCardProps {
     job: MatchedJob
-    onAdd: (job: Omit<MatchedJob, "id" | "matchScore" | "description" | "requirements">) => void
+    onAdd: (job: Omit<MatchedJob, "id" | "matchScore" | "requirements">) => void
 }
 
 export function QuickAddCard({ job, onAdd }: QuickAddCardProps) {
@@ -27,6 +27,7 @@ export function QuickAddCard({ job, onAdd }: QuickAddCardProps) {
             location: job.location,
             salary: job.salary,
             source: job.source,
+            description: job.description,
         })
     }
 

@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { callClaude, parseClaudeJSON, ClaudeAPIError } from "../lib/claudeClient";
+import { useJobStore } from "../store/useJobStore";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -152,6 +153,8 @@ function QuestionCard({
 // ─── Main Component ───────────────────────────────────────────────────────────
 
 export default function InterviewPrep() {
+  const { applications } = useJobStore();
+  const appsWithDescription = applications.filter((a) => a.description?.trim());
   const [jobDescription, setJobDescription] = useState("");
   const [isGenerating, setIsGenerating] = useState(false);
   const [result, setResult] = useState<PrepResult | null>(null);
@@ -201,6 +204,32 @@ export default function InterviewPrep() {
       {/* Input */}
       {!result && (
         <div className="space-y-3">
+          {appsWithDescription.length > 0 ? (
+            <div className="space-y-1">
+              <label className="text-xs text-muted-foreground font-mono uppercase tracking-wide">
+                Select from saved applications
+              </label>
+              <select
+                className="w-full flex h-10 rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                defaultValue=""
+                onChange={(e) => {
+                  const app = appsWithDescription.find((a) => a.id === e.target.value);
+                  if (app?.description) setJobDescription(app.description);
+                }}
+              >
+                <option value="" disabled>Choose an application...</option>
+                {appsWithDescription.map((a) => (
+                  <option key={a.id} value={a.id}>
+                    {a.company} — {a.role}
+                  </option>
+                ))}
+              </select>
+            </div>
+          ) : (
+            <p className="text-xs text-muted-foreground">
+              Save a job description with an application to auto-fill here.
+            </p>
+          )}
           <textarea
             className="w-full h-56 p-4 rounded-lg border border-border bg-muted/30 text-sm text-foreground placeholder:text-muted-foreground resize-none focus:outline-none focus:ring-2 focus:ring-ring"
             placeholder="Paste the full job description here — the more detail, the more tailored the questions..."

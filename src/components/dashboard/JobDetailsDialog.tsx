@@ -36,7 +36,7 @@ export function JobDetailsDialog({ job, open, onOpenChange }: JobDetailsDialogPr
         setIsEditing(false)
     }
 
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
         setFormData({ ...formData, [e.target.id]: e.target.value })
     }
 
@@ -135,6 +135,13 @@ export function JobDetailsDialog({ job, open, onOpenChange }: JobDetailsDialogPr
                             <div className="pt-4 border-t">
                                 <p className="text-xs text-muted-foreground mb-1">Source</p>
                                 <p className="text-sm">{job.source}</p>
+                            </div>
+                        )}
+
+                        {job.description && (
+                            <div className="pt-4 border-t">
+                                <p className="text-xs text-muted-foreground mb-1">Job Description</p>
+                                <p className="text-sm whitespace-pre-wrap">{job.description}</p>
                             </div>
                         )}
 
@@ -246,6 +253,19 @@ export function JobDetailsDialog({ job, open, onOpenChange }: JobDetailsDialogPr
                                     value={formData.time || ''}
                                     onChange={handleChange}
                                     className="col-span-3"
+                                />
+                            </div>
+                            <div className="grid grid-cols-4 items-start gap-4">
+                                <Label htmlFor="description" className="text-right pt-2.5">
+                                    Description
+                                </Label>
+                                <textarea
+                                    id="description"
+                                    value={formData.description || ''}
+                                    onChange={handleChange}
+                                    rows={4}
+                                    className="col-span-3 flex w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 resize-none"
+                                    placeholder="Job description..."
                                 />
                             </div>
                         </div>

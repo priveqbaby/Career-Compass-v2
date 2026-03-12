@@ -14,6 +14,7 @@ export interface JobApplication {
   time?: string
   source: string
   logo?: string
+  description?: string
 }
 
 interface JobStore {
@@ -53,6 +54,7 @@ export const useJobStore = create<JobStore>()((set, get) => ({
           time: row.time ?? undefined,
           source: row.source ?? '',
           logo: row.logo ?? undefined,
+          description: row.description ?? '',
         })),
       })
     }

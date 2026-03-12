@@ -80,7 +80,7 @@ const MATCHED_JOBS: MatchedJob[] = [
 export function Discover() {
     const { addApplication } = useJobStore()
 
-    const handleAddJob = (job: Omit<MatchedJob, "id" | "matchScore" | "description" | "requirements">) => {
+    const handleAddJob = (job: Omit<MatchedJob, "id" | "matchScore" | "requirements">) => {
         addApplication({
             ...job,
             status: "Saved",

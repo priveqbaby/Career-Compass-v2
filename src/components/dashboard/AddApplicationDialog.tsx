@@ -29,12 +29,14 @@ const emptyForm = () => ({
     source: "",
     date: new Date().toISOString().split('T')[0],
     time: "",
+    description: "",
 })
 
 export function AddApplicationDialog({ initialStatus = "Saved", open: controlledOpen, onOpenChange: setControlledOpen, trigger }: AddApplicationDialogProps) {
     const { addApplication } = useJobStore()
     const [internalOpen, setInternalOpen] = useState(false)
     const [showTime, setShowTime] = useState(false)
+    const [showDescription, setShowDescription] = useState(false)
 
     const open = controlledOpen !== undefined ? controlledOpen : internalOpen
     const setOpen = setControlledOpen || setInternalOpen
@@ -90,9 +92,10 @@ export function AddApplicationDialog({ initialStatus = "Saved", open: controlled
         setUrlError(null)
         setUrlSuccess(false)
         setShowTime(false)
+        setShowDescription(false)
     }
 
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         setFormData({ ...formData, [e.target.id]: e.target.value })
     }
 
@@ -239,6 +242,39 @@ export function AddApplicationDialog({ initialStatus = "Saved", open: controlled
                                 </button>
                             )}
                         </div>
+                        {showDescription ? (
+                            <div className="space-y-1.5">
+                                <div className="flex items-center justify-between">
+                                    <Label htmlFor="description">Job Description</Label>
+                                    <button
+                                        type="button"
+                                        className="text-xs text-muted-foreground hover:text-foreground"
+                                        onClick={() => {
+                                            setShowDescription(false)
+                                            setFormData(prev => ({ ...prev, description: "" }))
+                                        }}
+                                    >
+                                        Remove
+                                    </button>
+                                </div>
+                                <textarea
+                                    id="description"
+                                    value={formData.description}
+                                    onChange={handleChange}
+                                    rows={4}
+                                    className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 resize-none"
+                                    placeholder="Paste the job description here..."
+                                />
+                            </div>
+                        ) : (
+                            <button
+                                type="button"
+                                className="text-xs text-muted-foreground hover:text-foreground"
+                                onClick={() => setShowDescription(true)}
+                            >
+                                + Add job description
+                            </button>
+                        )}
                     </div>
                     <DialogFooter>
                         <Button type="submit">Save Application</Button>
