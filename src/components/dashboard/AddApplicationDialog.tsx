@@ -1,5 +1,5 @@
 import { useState } from "react"
-import { Plus } from "lucide-react"
+import { Plus, Loader2 } from "lucide-react"
 import { Button } from "../ui/button"
 import {
     Dialog,
@@ -38,6 +38,43 @@ export function AddApplicationDialog({ initialStatus = "Saved", open: controlled
         time: "",
     })
 
+    const [urlInput, setUrlInput] = useState("")
+    const [urlLoading, setUrlLoading] = useState(false)
+    const [urlError, setUrlError] = useState<string | null>(null)
+    const [urlSuccess, setUrlSuccess] = useState(false)
+
+    const handleAutofill = async () => {
+        if (!urlInput.trim()) return
+        setUrlLoading(true)
+        setUrlError(null)
+        setUrlSuccess(false)
+        try {
+            const response = await fetch("/api/scrape", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ url: urlInput.trim() }),
+            })
+            const data = await response.json()
+            if (!response.ok) {
+                setUrlError(data.error || "Failed to extract job details")
+                return
+            }
+            setFormData(prev => ({
+                ...prev,
+                company: data.company || prev.company,
+                role: data.role || prev.role,
+                location: data.location || prev.location,
+                salary: data.salary || prev.salary,
+                source: data.source || prev.source,
+            }))
+            setUrlSuccess(true)
+        } catch {
+            setUrlError("Network error — check your connection and try again.")
+        } finally {
+            setUrlLoading(false)
+        }
+    }
+
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault()
         addApplication({
@@ -54,6 +91,9 @@ export function AddApplicationDialog({ initialStatus = "Saved", open: controlled
             date: new Date().toISOString().split('T')[0],
             time: "",
         })
+        setUrlInput("")
+        setUrlError(null)
+        setUrlSuccess(false)
     }
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -82,6 +122,36 @@ export function AddApplicationDialog({ initialStatus = "Saved", open: controlled
                 </DialogHeader>
                 <form onSubmit={handleSubmit}>
                     <div className="grid gap-4 py-4">
+                        <div className="flex gap-2">
+                            <Input
+                                placeholder="Paste job URL to auto-fill..."
+                                value={urlInput}
+                                onChange={e => {
+                                    setUrlInput(e.target.value)
+                                    setUrlError(null)
+                                    setUrlSuccess(false)
+                                }}
+                                className="flex-1"
+                            />
+                            <Button
+                                type="button"
+                                variant="outline"
+                                onClick={handleAutofill}
+                                disabled={urlLoading || !urlInput.trim()}
+                            >
+                                {urlLoading ? (
+                                    <Loader2 className="h-4 w-4 animate-spin" />
+                                ) : (
+                                    "Auto-fill"
+                                )}
+                            </Button>
+                        </div>
+                        {urlError && (
+                            <p className="text-sm text-destructive">{urlError}</p>
+                        )}
+                        {urlSuccess && (
+                            <p className="text-sm text-green-600">Fields filled from job posting</p>
+                        )}
                         <div className="grid grid-cols-4 items-center gap-4">
                             <Label htmlFor="company" className="text-right">
                                 Company
