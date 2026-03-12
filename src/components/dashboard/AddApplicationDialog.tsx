@@ -34,6 +34,7 @@ const emptyForm = () => ({
 export function AddApplicationDialog({ initialStatus = "Saved", open: controlledOpen, onOpenChange: setControlledOpen, trigger }: AddApplicationDialogProps) {
     const { addApplication } = useJobStore()
     const [internalOpen, setInternalOpen] = useState(false)
+    const [showTime, setShowTime] = useState(false)
 
     const open = controlledOpen !== undefined ? controlledOpen : internalOpen
     const setOpen = setControlledOpen || setInternalOpen
@@ -88,6 +89,7 @@ export function AddApplicationDialog({ initialStatus = "Saved", open: controlled
         setUrlInput("")
         setUrlError(null)
         setUrlSuccess(false)
+        setShowTime(false)
     }
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -197,29 +199,45 @@ export function AddApplicationDialog({ initialStatus = "Saved", open: controlled
                                 placeholder="LinkedIn, Referral, etc."
                             />
                         </div>
-                        <div className="grid grid-cols-4 items-center gap-4">
-                            <Label htmlFor="date" className="text-right">
-                                Date
-                            </Label>
+                        <div className="space-y-1.5">
+                            <Label htmlFor="date">Date</Label>
                             <Input
                                 id="date"
                                 type="date"
                                 value={formData.date}
                                 onChange={handleChange}
-                                className="col-span-3"
                             />
-                        </div>
-                        <div className="grid grid-cols-4 items-center gap-4">
-                            <Label htmlFor="time" className="text-right">
-                                Time
-                            </Label>
-                            <Input
-                                id="time"
-                                type="time"
-                                value={formData.time}
-                                onChange={handleChange}
-                                className="col-span-3"
-                            />
+                            {showTime ? (
+                                <div className="space-y-1.5 pt-1">
+                                    <div className="flex items-center justify-between">
+                                        <Label htmlFor="time">Time</Label>
+                                        <button
+                                            type="button"
+                                            className="text-xs text-muted-foreground hover:text-foreground"
+                                            onClick={() => {
+                                                setShowTime(false)
+                                                setFormData(prev => ({ ...prev, time: "" }))
+                                            }}
+                                        >
+                                            Remove
+                                        </button>
+                                    </div>
+                                    <Input
+                                        id="time"
+                                        type="time"
+                                        value={formData.time}
+                                        onChange={handleChange}
+                                    />
+                                </div>
+                            ) : (
+                                <button
+                                    type="button"
+                                    className="text-xs text-muted-foreground hover:text-foreground"
+                                    onClick={() => setShowTime(true)}
+                                >
+                                    + Add time
+                                </button>
+                            )}
                         </div>
                     </div>
                     <DialogFooter>

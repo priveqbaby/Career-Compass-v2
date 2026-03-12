@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react"
+import { ErrorBoundary } from "./components/ErrorBoundary"
 import { AppShell } from "./components/layout/AppShell"
 import { Dashboard } from "./pages/Dashboard"
 import { CalendarPage } from "./pages/CalendarPage"
@@ -23,11 +24,11 @@ function App() {
   useEffect(() => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (_event, session) => {
       setSession(session)
-      setLoading(false)
       if (session) {
         await loadUser(session.user.id, session.user.email ?? '')
         await loadJobs(session.user.id)
       }
+      setLoading(false)
     })
 
     return () => subscription.unsubscribe()
@@ -50,13 +51,15 @@ function App() {
   }
 
   return (
-    <AppShell currentPage={currentPage} onNavigate={setCurrentPage}>
-      {currentPage === 'dashboard' && <Dashboard />}
-      {currentPage === 'calendar' && <CalendarPage />}
-      {currentPage === 'analytics' && <Analytics />}
-      {currentPage === 'discover' && <InterviewPrep />}
-      {currentPage === 'cv-optimizer' && <CVOptimizer />}
-    </AppShell>
+    <ErrorBoundary>
+      <AppShell currentPage={currentPage} onNavigate={setCurrentPage}>
+        {currentPage === 'dashboard' && <Dashboard />}
+        {currentPage === 'calendar' && <CalendarPage />}
+        {currentPage === 'analytics' && <Analytics />}
+        {currentPage === 'discover' && <InterviewPrep />}
+        {currentPage === 'cv-optimizer' && <CVOptimizer />}
+      </AppShell>
+    </ErrorBoundary>
   )
 }
 

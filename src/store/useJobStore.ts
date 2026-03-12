@@ -49,7 +49,7 @@ export const useJobStore = create<JobStore>()((set, get) => ({
           location: row.location ?? '',
           salary: row.salary ?? '',
           status: row.status as JobStatus,
-          date: row.date,
+          date: row.date ?? new Date().toISOString().split('T')[0],
           time: row.time ?? undefined,
           source: row.source ?? '',
           logo: row.logo ?? undefined,

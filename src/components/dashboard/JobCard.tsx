@@ -1,6 +1,7 @@
 import { useState } from "react"
 import { useSortable } from "@dnd-kit/sortable"
 import { CSS } from "@dnd-kit/utilities"
+import { format, parseISO } from "date-fns"
 import { Calendar, MapPin, Building2, ExternalLink, DollarSign } from "lucide-react"
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card"
 import { Badge } from "../ui/badge"
@@ -69,7 +70,7 @@ export function JobCard({ job }: JobCardProps) {
                             </div>
                             <div className="flex items-center text-xs text-muted-foreground gap-2">
                                 <Calendar className="h-3.5 w-3.5" />
-                                {job.date}
+                                {job.date ? format(parseISO(job.date), 'MMM d, yyyy') : ''}
                             </div>
                             <div className="flex items-center text-xs text-muted-foreground gap-2">
                                 <DollarSign className="h-3.5 w-3.5" />
